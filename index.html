@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Chess Review</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <section id="setup" class="setup-card">
+      <div class="brand-row">
+        <div class="brand-icon">♟</div>
+        <div>
+          <h1>Chess Review</h1>
+          <p>Вставь PGN и получи отчёт прямо на сайте</p>
+        </div>
+      </div>
+
+      <textarea id="pgnInput" placeholder="Вставь PGN партии сюда..."></textarea>
+
+      <div class="settings-grid">
+        <label>
+          Глубина анализа
+          <select id="depthSelect">
+            <option value="8">Быстро depth 8</option>
+            <option value="10" selected>Нормально depth 10</option>
+            <option value="12">Сильнее depth 12</option>
+            <option value="14">Максимум для сайта depth 14</option>
+          </select>
+        </label>
+        <label>
+          Ходов анализировать
+          <select id="limitSelect">
+            <option value="20">Первые 20 полуходов</option>
+            <option value="40" selected>Первые 40 полуходов</option>
+            <option value="80">Первые 80 полуходов</option>
+            <option value="999">Всю партию</option>
+          </select>
+        </label>
+      </div>
+
+      <button id="analyzeBtn" class="primary-btn">Анализировать</button>
+      <div id="progress" class="progress hidden">
+        <div class="progress-title">Stockfish анализирует...</div>
+        <div class="progress-bar"><div id="progressFill"></div></div>
+        <div id="progressText">0%</div>
+      </div>
+
+      <div class="note">
+        Работает без Python и без включённого ноутбука: анализ идёт в браузере через Stockfish WASM/JS.
+      </div>
+    </section>
+
+    <section id="review" class="review hidden">
+      <div class="topbar">
+        <button class="round-btn" id="backToSetup">←</button>
+        <div class="title-wrap">
+          <div class="main-title">Отчёт о партии</div>
+          <div class="players-small" id="playersSmall">—</div>
+        </div>
+        <button class="round-btn" id="flipBtn">↻</button>
+      </div>
+
+      <div class="player-card player-top" id="blackCard">
+        <div class="avatar dark-avatar">♟</div>
+        <div class="player-info">
+          <div class="player-name" id="blackName">Black</div>
+          <div class="player-sub" id="blackStats">Точность —</div>
+        </div>
+        <div class="player-acc" id="blackAcc">—</div>
+      </div>
+
+      <div class="speech-row">
+        <div class="coach-avatar">♟</div>
+        <div class="speech">
+          <div class="speech-head">
+            <div class="speech-title" id="speechTitle">Начальная позиция</div>
+            <div class="eval-pill" id="evalPill">0.00</div>
+          </div>
+          <div class="speech-text" id="speechText">Листай ходы или нажимай на ход снизу.</div>
+        </div>
+      </div>
+
+      <div class="accuracy-box">
+        <div class="acc-row"><div>Белые</div><div class="acc-bar"><div id="wAccFill" class="acc-fill"></div></div><div id="wAccText">—</div></div>
+        <div class="acc-row"><div>Чёрные</div><div class="acc-bar"><div id="bAccFill" class="acc-fill"></div></div><div id="bAccText">—</div></div>
+      </div>
+
+      <div class="evalbar-wrap">
+        <div class="evalbar"></div>
+        <div class="eval-pointer" id="evalPointer"></div>
+      </div>
+
+      <div class="board-zone">
+        <div id="board" class="board"></div>
+        <svg id="arrowLayer" class="arrow-layer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      </div>
+
+      <div class="player-card player-bottom" id="whiteCard">
+        <div class="avatar light-avatar">♙</div>
+        <div class="player-info">
+          <div class="player-name" id="whiteName">White</div>
+          <div class="player-sub" id="whiteStats">Точность —</div>
+        </div>
+        <div class="player-acc" id="whiteAcc">—</div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" id="prevBtn">‹ Назад</button>
+        <button class="nav-btn next-btn" id="nextBtn">Далее</button>
+      </div>
+
+      <div class="move-strip-row">
+        <div class="move-strip" id="moveStrip"></div>
+      </div>
+
+      <div class="controls">
+        <button class="control" id="bestBtn"><span class="ico">🎓</span><span>Лучший</span></button>
+        <button class="control" id="startBtn"><span class="ico">↺</span><span>Сначала</span></button>
+        <button class="control" id="copyBtn"><span class="ico">📋</span><span>PGN</span></button>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-title">Статистика</div>
+        <div id="info"></div>
+        <div class="stat-list" id="statList"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
